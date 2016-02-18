@@ -162,7 +162,7 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    if (!collection) {
+    if (collection.length === 0) {
       return true;
     }
     else if (!iterator) {
