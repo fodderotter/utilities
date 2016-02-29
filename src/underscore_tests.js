@@ -59,6 +59,16 @@ var _ = { };
   // Call iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
   _.each = function(collection, iterator) {
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        iterator(collection[i], i, collection);
+      }
+    }
+    else {
+      for (var key in collection) {
+        iterator(collection[key], key, collection);
+      }
+    }
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -142,9 +152,16 @@ var _ = { };
 
   // Calls the method named by methodName on each value in the list.
   _.invoke = function(list, methodName, args) {
-    var newArr = list;
-    for(var i = 0; i < list.length; i++) {
-      newArr[i] = methodName(newArr[i]);
+    var newArr = [];
+    if (typeof methodName === "string") {
+      list.forEach(function(value, index) {
+        newArr.push(value[methodName](args));
+      });
+    }
+    else {
+      list.forEach(function(value, index) {
+        newArr.push(methodName.apply(value, args));
+      });
     }
     return newArr;
   };
@@ -153,10 +170,39 @@ var _ = { };
   // iterator(previousValue, item) for each item. previousValue should be
   // the return value of the previous iterator call.
   _.reduce = function(collection, iterator, initialValue) {
+    var result;
+    if (arguments.length > 2) {
+      result = initialValue;
+      for (var i = 0; i < collection.length; i++) {
+        result = iterator(result, collection[i]);
+      }
+    }
+    else {
+      result = 0;
+      for (var i = 0; i < collection.length; i++) {
+        result = iterator(result, collection[i]);
+      }
+    }
+    return result;
   };
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
+    if (Array.isArray(collection)) {
+      if (collection.indexOf(target) !== -1) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    // else {
+      for (var key in collection) {
+        if (collection[key] === target) {
+          return true;
+        }
+      }
+    // }
   };
 
 
@@ -197,6 +243,7 @@ var _ = { };
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+
   };
 
 
